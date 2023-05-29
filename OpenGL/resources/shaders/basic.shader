@@ -10,15 +10,14 @@ out vec2 v_TexCoord;
 uniform mat4 u_MVP;
 
 void main() {
-	gl_Position = position;
-	//gl_Position = position * u_MVP;
+	// gl_Position = position;
+
+
+	gl_Position = u_MVP * position;
 	v_TexCoord = texCoord;
 }
 
-
-
-
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #shader fragment
 #version 330 core
@@ -33,8 +32,9 @@ uniform sampler2D u_Texture;
 void main() {
 	vec4 texColor = texture(u_Texture, v_TexCoord);
 	color = texColor;
-	//color = u_Color;
 	
+
+	//color = u_Color;
 
 
 	//color = vec4(1.0f);

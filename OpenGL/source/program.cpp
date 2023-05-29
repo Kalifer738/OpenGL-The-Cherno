@@ -71,14 +71,10 @@ int main(void) {
 
 	//Static render of verticies
 	float trianglePos[16] = {
-		-0.5f, -0.5f, 0.0f, 0.0f,
-		 0.5f, -0.5f, 1.0f, 0.0f,
-		 0.5f,  0.5f, 1.0f, 1.0f,
-		-0.5f,  0.5f, 0.0f, 1.0f
-		/*100.0f, 100.0f, 0.0f, 0.0f,
+		100.0f, 100.0f, 0.0f, 0.0f,
 		200.0f, 100.0f, 1.0f, 0.0f,
 		200.0f, 200.0f, 1.0f, 1.0f,
-		100.0f, 200.0f, 0.0f, 1.0f*/
+		100.0f, 200.0f, 0.0f, 1.0f
 	};
 
 	//Instead of repeting each vertex's position multiple times, we store how they are connected.
@@ -102,17 +98,20 @@ int main(void) {
 	
 	IndexBuffer ib(indicies, 6);
 
-	//glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
-	//glm::vec4 vp(100.0f, 100.0f, 0.0f, 0.0f);
-	//glm::vec4 result = proj * vp;
-	// glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
+	// Projection Matrix: Converting any space cordinates, to 1-1 space mapping: mapping the screen from 0 left to 1 right for example, projective/ortrocraphic view
+	glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
+	
+	// View Matrix: Rotation/Transformaton/Scale of the camera: moves the camera to the left 100 units
+	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
 
-	// glm::mat4 mvp = proj * view;
+	// Model matrix: Rotation/Transformaton/Scale of all the models in a scene
+	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(300, 150, 0));
+
+	glm::mat4 mvp = proj * view * model;
 
 	Shader shader("resources/shaders/basic.shader");
 	shader.Bind();
-	//shader.SetUniformMat4f("u_MVP", mvp);
-	//shader.SetUniformMat4f("u_MVP", proj);
+	shader.SetUniformMat4f("u_MVP", mvp);
 
 	Texture texture("resources/textures/pic.png");
 	texture.Bind();
@@ -125,26 +124,14 @@ int main(void) {
 
 	Renderer renderer;
 
-	//float r = 0.5f;
-	//float adder = 0.03f;
-
 	// Enable VSync
 	GLCall(glfwSwapInterval(1));
 
-	// render loop
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	// render loop
 	while (!glfwWindowShouldClose(window)) {
 		//processInput(window);
-
-		//if (r >= 1.0f) {
-		//	adder = -adder;
-		//}
-		//else if (r <= -1.0f) {
-		//	adder = -adder;
-		//}
-		// shader.SetUniform4f("u_Color", r, 0.5f, 0.5f, 1.0f);
-		//r += adder;
 
 		renderer.Clear();
 		renderer.Draw(va, ib, shader);
