@@ -4,9 +4,13 @@
 
 #include <iostream>
 #include <sstream>
-#include <fstream> //TODO: "use C streams, they tend to be faster": The Cherno
+#include <fstream> //MyTODO: "use C streams, they tend to be faster": The Cherno
 #include <string>
 
+
+Shader::Shader() : m_FilePath(""), m_RenderID(0) {
+	//MyTODO: always inicialize a new shader, with a default shader
+}
 
 Shader::Shader(const std::string& shaderPath) : m_FilePath(shaderPath), m_RenderID(0) {
 	ShaderProgramSource source = ParseShader(m_FilePath);

@@ -7,17 +7,83 @@
 #include "Renderer.h"
 #include "Texture.h"
 #include "VertexBufferLayout.h"
+#include "Test.h"
 
 #include "glm.hpp"
 #include "./gtc/matrix_transform.hpp"
-#include "program.h"
+
+#include "imgui.h"
+#include "example_glfw_opengl3/imgui_impl_opengl3.h"
+#include "example_glfw_opengl3/imgui_impl_glfw.h"
+#include <testClearColorPicker/TestClearColor.h>
+#include <testDrawTriangle/TestDrawTriangle.h>
+#include <testDrawTextureOnAQuad/TestDrawTextureOnAQuad.h>
+
 
 
 
 #define M_WINDOW_HEIGHT 960
 #define M_WINDOW_WIDTH 540
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="window">The Opengl Window</param>
+/// <param name="io">ImGui IO, no idea why its needed</param>
+/// <param name="imGui_show_demo_window">a pointer that poitns to a boolean to enable or disable the demo window</param>
+/// <param name="f_currentTest">a pointer, that points to the pointer, that points to the actual object</param>
+/// <param name="f_testMenu">a pointer, that points to the pointer, that points to the actual object of the entry point of the test menu</param>
+void ImGuiRender(GLFWwindow* window, ImGuiIO& io, bool& imGui_show_demo_window, test::Test** f_currentTest, test::Test* f_testMenu) {
+	// Start the Dear ImGui frame
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
 
+	// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+	if (imGui_show_demo_window)
+		ImGui::ShowDemoWindow(&imGui_show_demo_window);
+
+	/*ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();*/
+	if (f_currentTest) {
+		(*f_currentTest)->OnUpdate(0.0f);
+		(*f_currentTest)->OnRender();
+		ImGui::Begin("Test");
+		if (*f_currentTest != f_testMenu && ImGui::Button("<-")) {
+			delete (*f_currentTest);
+			(*f_currentTest) = nullptr;
+			(*f_currentTest) = f_testMenu;
+		}
+		(*f_currentTest)->OnImGuiRender();
+		ImGui::End();
+
+	}
+	//ImGui::Render();
+	//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	//ImGui::UpdatePlatformWindows();
+	
+
+
+	// Rendering
+	ImGui::Render();
+	int display_w, display_h;
+	glfwGetFramebufferSize(window, &display_w, &display_h);
+	GLCall(glViewport(0, 0, display_w, display_h));
+	GLCall(glClear(GL_COLOR_BUFFER_BIT));
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+	// Update and Render additional Platform Windows
+	// (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
+	//  For this specific demo app we could also call glfwMakeContextCurrent(window) directly)
+	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		GLFWwindow* backup_current_context = glfwGetCurrentContext();
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+		glfwMakeContextCurrent(backup_current_context);
+	}
+	ImGui::EndFrame();
+}
 
 //Window and input
 void processInput(GLFWwindow* window) {
@@ -61,6 +127,10 @@ GLFWwindow* Inicialize() {
 	glViewport(0, 0, M_WINDOW_HEIGHT, M_WINDOW_WIDTH);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+	//Enabled Alpha blending
+	GLCall(glEnable(GL_BLEND));
+	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
 	std::cout << glGetString(GL_VERSION) << std::endl;
 
 	return window;
@@ -69,77 +139,79 @@ GLFWwindow* Inicialize() {
 int main(void) {
 	GLFWwindow* window = Inicialize();
 
-	//Static render of verticies
-	float trianglePos[16] = {
-		100.0f, 100.0f, 0.0f, 0.0f,
-		200.0f, 100.0f, 1.0f, 0.0f,
-		200.0f, 200.0f, 1.0f, 1.0f,
-		100.0f, 200.0f, 0.0f, 1.0f
-	};
+	test::Test* currentTest = nullptr;
+	test::TestMenu* testMenu = new test::TestMenu(currentTest);
+	currentTest = testMenu;
 
-	//Instead of repeting each vertex's position multiple times, we store how they are connected.
-	unsigned int indicies[] = {
-		0, 1, 2,
-		2, 3, 0
-	};
+	testMenu->RegisterTest<test::TestClearColor>("Clear Color");
+	testMenu->RegisterTest<test::TestDrawTriangle>("Draw Triangle");
+	testMenu->RegisterTest<test::TestDrawTextureOnAQuad>("Draw a Textured Quad");
 
-	//Enabled Alpha blending
-	GLCall(glEnable(GL_BLEND));
-	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
-
-	VertexArray va;
-	VertexBuffer vb(trianglePos, 4 * 4 * sizeof(float));
-
-	VertexBufferLayout layout;
-	layout.Push<float>(2);
-	layout.Push<float>(2); 
-	va.AddBuffer(vb, layout);
 	
-	IndexBuffer ib(indicies, 6);
-
-	// Projection Matrix: Converting any space cordinates, to 1-1 space mapping: mapping the screen from 0 left to 1 right for example, projective/ortrocraphic view
-	glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
-	
-	// View Matrix: Rotation/Transformaton/Scale of the camera: moves the camera to the left 100 units
-	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
-
-	// Model matrix: Rotation/Transformaton/Scale of all the models in a scene
-	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(300, 150, 0));
-
-	glm::mat4 mvp = proj * view * model;
-
-	Shader shader("resources/shaders/basic.shader");
-	shader.Bind();
-	shader.SetUniformMat4f("u_MVP", mvp);
-
-	Texture texture("resources/textures/pic.png");
-	texture.Bind();
-	shader.SetUniform1i("u_Texture", 0);
-
-	va.UnBind();
-	vb.Unbind();
-	ib.Unbind();
-	shader.UnBind();
 
 	Renderer renderer;
 
 	// Enable VSync
 	GLCall(glfwSwapInterval(1));
 
+	// BEGIN imgui
+		const char* glsl_version = "#version 150";
+		// Setup Dear ImGui context
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
+
+		// Setup Dear ImGui style
+		ImGui::StyleColorsDark();
+		//ImGui::StyleColorsLight();
+
+		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
+		ImGuiStyle& style = ImGui::GetStyle();
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			style.WindowRounding = 0.0f;
+			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+		}
+
+		// Setup Platform/Renderer backends
+		ImGui_ImplGlfw_InitForOpenGL(window, true);
+		ImGui_ImplOpenGL3_Init(glsl_version);
+
+		// Our state
+		bool show_demo_window = true;
+
+	// END imgui
+
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	// render loop
 	while (!glfwWindowShouldClose(window)) {
+		GLCall(glfwPollEvents());
 		//processInput(window);
 
 		renderer.Clear();
-		renderer.Draw(va, ib, shader);
 
+		ImGuiRender(window, io, show_demo_window, &currentTest, testMenu);
+		if (currentTest) {
+			currentTest->OnRender();
+		}
+		
 		GLCall(glfwSwapBuffers(window));
-		GLCall(glfwPollEvents());
 	}
 
+	//TODO: setup a test folder with test classes, containing little tests about drawing a triangle, a quad, using shader uniforms, 
+	//	drawing a texture, drawing multiple textures, and maybe some imgui tests
+
+	// Cleanup
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
+	glfwDestroyWindow(window); 
 	glfwTerminate();
 	return 0;
 }

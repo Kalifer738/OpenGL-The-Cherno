@@ -2,6 +2,10 @@
 
 #include "Renderer.h"
 
+IndexBuffer::IndexBuffer() : m_Count { 0 }, m_RendererID{ 0 } {
+
+}
+
 IndexBuffer::IndexBuffer(const unsigned int* indiciesData, unsigned int count) {
 	ASSERT(sizeof(unsigned int) == sizeof(GLuint));
 
@@ -21,7 +25,7 @@ void IndexBuffer::Bind() const {
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
 }
 
-void IndexBuffer::Unbind() const {
+void IndexBuffer::UnBind() const {
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
 }

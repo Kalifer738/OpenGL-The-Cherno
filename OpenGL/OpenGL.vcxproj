@@ -116,7 +116,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)OpenGL\dependencies\include;$(SolutionDir)OpenGL\vendor\stb_image;$(SolutionDir)OpenGL\vendor\glm</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)OpenGL\dependencies\include;$(SolutionDir)OpenGL\vendor\stb_image;$(SolutionDir)OpenGL\vendor\glm;$(SolutionDir)OpenGL\vendor\imgui;$(SolutionDir)OpenGL\source;$(SolutionDir)OpenGL\tests;$(SolutionDir)OpenGL\dependencies\dep\GLFW</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,7 +133,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)OpenGL\dependencies\include;$(SolutionDir)OpenGL\vendor\stb_image;$(SolutionDir)OpenGL\vendor\glm</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)OpenGL\dependencies\include;$(SolutionDir)OpenGL\vendor\stb_image;$(SolutionDir)OpenGL\vendor\glm;$(SolutionDir)OpenGL\vendor\imgui;$(SolutionDir)OpenGL\source;$(SolutionDir)OpenGL\tests;$(SolutionDir)OpenGL\dependencies\dep\GLFW</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -153,10 +153,23 @@
     <ClCompile Include="source\Texture.cpp" />
     <ClCompile Include="source\VertexArray.cpp" />
     <ClCompile Include="source\VertexBuffer.cpp" />
+    <ClCompile Include="tests\Test.cpp" />
+    <ClCompile Include="tests\testClearColorPicker\TestClearColor.cpp" />
+    <ClCompile Include="tests\testClearColorPicker\TestClearColor.h" />
+    <ClCompile Include="tests\testDrawTextureOnAQuad\TestDrawTextureOnAQuad.cpp" />
+    <ClCompile Include="tests\testDrawTriangle\TestDrawTriangle.cpp" />
+    <ClCompile Include="vendor\imgui\example_glfw_opengl3\imgui_impl_glfw.cpp" />
+    <ClCompile Include="vendor\imgui\example_glfw_opengl3\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="vendor\imgui\imgui.cpp" />
+    <ClCompile Include="vendor\imgui\imgui_demo.cpp" />
+    <ClCompile Include="vendor\imgui\imgui_draw.cpp" />
+    <ClCompile Include="vendor\imgui\imgui_tables.cpp" />
+    <ClCompile Include="vendor\imgui\imgui_widgets.cpp" />
     <ClCompile Include="vendor\stb_image\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\basic.shader" />
+    <None Include="tests\testDrawTriangle\BasicShader.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\IndexBuffer.h" />
@@ -167,6 +180,18 @@
     <ClInclude Include="source\VertexArray.h" />
     <ClInclude Include="source\VertexBuffer.h" />
     <ClInclude Include="source\VertexBufferLayout.h" />
+    <ClInclude Include="tests\Test.h" />
+    <ClInclude Include="tests\testDrawTextureOnAQuad\TestDrawTextureOnAQuad.h" />
+    <ClInclude Include="tests\testDrawTriangle\TestDrawTriangle.h" />
+    <ClInclude Include="vendor\imgui\example_glfw_opengl3\imgui_impl_glfw.h" />
+    <ClInclude Include="vendor\imgui\example_glfw_opengl3\imgui_impl_opengl3.h" />
+    <ClInclude Include="vendor\imgui\example_glfw_opengl3\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="vendor\imgui\imconfig.h" />
+    <ClInclude Include="vendor\imgui\imgui.h" />
+    <ClInclude Include="vendor\imgui\imgui_internal.h" />
+    <ClInclude Include="vendor\imgui\imstb_rectpack.h" />
+    <ClInclude Include="vendor\imgui\imstb_textedit.h" />
+    <ClInclude Include="vendor\imgui\imstb_truetype.h" />
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -8,9 +8,11 @@ private:
 	unsigned int m_RendererID;
 
 public:
+	// MyTODO: disallow BINDING a empty vertex buffer.
+	VertexBuffer();
 	VertexBuffer(const void* data, unsigned int size);
 	~VertexBuffer();
 
 	void Bind() const;
-	void Unbind() const;
+	void UnBind() const;
 }; 

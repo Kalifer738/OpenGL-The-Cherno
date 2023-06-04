@@ -10,11 +10,13 @@ private:
 	unsigned int m_Count;
 
 public:
+	// MyTODO: disallow BINDING a empty index buffer.
+	IndexBuffer();
 	IndexBuffer(const unsigned int* indiciesData, unsigned int count);
 	~IndexBuffer();
 
 	void Bind() const;
-	void Unbind() const;
+	void UnBind() const;
 
 	inline unsigned int GetCount() const { return m_Count; };
 }; 
