@@ -78,10 +78,14 @@
     <ClCompile Include="tests\testDrawTextureOnAQuad\TestDrawTextureOnAQuad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="tests\testDrawLines\TestDrawLines.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\basic.shader" />
     <None Include="tests\testDrawTriangle\BasicShader.shader" />
+    <None Include="tests\testDrawLines\shapeShader.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\Renderer.h">
@@ -145,6 +149,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="tests\testDrawTextureOnAQuad\TestDrawTextureOnAQuad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tests\testDrawLines\TestDrawLines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

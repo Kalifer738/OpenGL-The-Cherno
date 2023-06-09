@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include "imgui.h"
 #include <functional>
+#include <iostream>
 
 #include "glm.hpp"
 #include "./gtc/matrix_transform.hpp"

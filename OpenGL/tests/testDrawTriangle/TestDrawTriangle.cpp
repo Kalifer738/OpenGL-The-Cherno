@@ -1,6 +1,8 @@
 #include "TestDrawTriangle.h"
+#include <iostream>
 
-
+#include "../glm/gtc/type_ptr.hpp"
+#include "../glm/gtx/string_cast.hpp"
 namespace test {
 
 	TestDrawTriangle::TestDrawTriangle()		
@@ -14,6 +16,8 @@ namespace test {
 		unsigned int m_TriangleIndexieIndex[3] = { 
 			0, 1, 2 
 		};
+
+		m_Position = new glm::vec3(0.0f);
 
 		VertexBuffer vb(m_VertexPositions, 2 * 3 * sizeof(float));
 
@@ -52,20 +56,20 @@ namespace test {
 	void TestDrawTriangle::OnRender() {
 		Renderer renderer;
 
-		glm::mat4 mvp = (*m_Projection) * (*m_View) * (*m_Model);
+		auto newModel = new glm::mat4(glm::translate(*m_Model, *m_Position));
+
+
+		glm::mat4 mvp = (*m_Projection) * (*m_View) * (*newModel);
 		m_Shader->Bind();
 		m_Shader->SetUniformMat4f("u_MVP", mvp);
 
 		renderer.Draw(*m_VertexArray, *m_IndexBuffer, *m_Shader);
+
+		delete newModel;
 	}
 
 	void TestDrawTriangle::OnImGuiRender() {
-		//MyTODO: figure out how the matrix4 class from GLM works, in order to access all of the matricies, and to make them easily editable via imGUI
-		/*ImGui::DragFloat("Vertex #1 X:", &m_Model[0], 0.1);
-		ImGui::DragFloat("Vertex #1 Y:", &m_Model[1], 0.1);
-		ImGui::DragFloat("Vertex #2 X:", &m_Model[2], 0.1);
-		ImGui::DragFloat("Vertex #2 Y:", &m_Model[3], 0.1);
-		ImGui::DragFloat("Vertex #3 X:", &m_Model[4], 0.1);
-		ImGui::DragFloat("Vertex #3 Y:", &m_Model[5], 0.1);*/
+		ImGui::DragFloat("Vertex float x", &m_Position->x, 0.01);
+		ImGui::DragFloat("Vertex float y", &m_Position->y, 0.01);
 	}
 }

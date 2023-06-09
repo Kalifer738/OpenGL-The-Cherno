@@ -200,6 +200,7 @@ int main(void) {
 			currentTest->OnRender();
 		}
 		
+		GLCall(glClearColor(0.1f, 0.2f, 0.5f, 1.0f));
 		GLCall(glfwSwapBuffers(window));
 	}
 

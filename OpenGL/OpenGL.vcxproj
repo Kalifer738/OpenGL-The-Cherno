@@ -156,6 +156,7 @@
     <ClCompile Include="tests\Test.cpp" />
     <ClCompile Include="tests\testClearColorPicker\TestClearColor.cpp" />
     <ClCompile Include="tests\testClearColorPicker\TestClearColor.h" />
+    <ClCompile Include="tests\testDrawLines\TestDrawLines.cpp" />
     <ClCompile Include="tests\testDrawTextureOnAQuad\TestDrawTextureOnAQuad.cpp" />
     <ClCompile Include="tests\testDrawTriangle\TestDrawTriangle.cpp" />
     <ClCompile Include="vendor\imgui\example_glfw_opengl3\imgui_impl_glfw.cpp" />
@@ -169,6 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\basic.shader" />
+    <None Include="tests\testDrawLines\shapeShader.shader" />
     <None Include="tests\testDrawTriangle\BasicShader.shader" />
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +183,7 @@
     <ClInclude Include="source\VertexBuffer.h" />
     <ClInclude Include="source\VertexBufferLayout.h" />
     <ClInclude Include="tests\Test.h" />
+    <ClInclude Include="tests\testDrawLines\TestDrawLines.h" />
     <ClInclude Include="tests\testDrawTextureOnAQuad\TestDrawTextureOnAQuad.h" />
     <ClInclude Include="tests\testDrawTriangle\TestDrawTriangle.h" />
     <ClInclude Include="vendor\imgui\example_glfw_opengl3\imgui_impl_glfw.h" />

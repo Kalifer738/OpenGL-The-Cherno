@@ -6,19 +6,19 @@
 #include "VertexArray.h"
 #include "Shader.h"
 #include "VertexBufferLayout.h"
+#include "Texture.h"
 
 namespace test {
-	class TestDrawTriangle : public Test
-	{
+	class TestDrawLines : public Test {
 	public:
-		TestDrawTriangle();
-		~TestDrawTriangle();
+		TestDrawLines();
+		~TestDrawLines();
 
 		void OnRender() override;
 		void OnImGuiRender() override;
 	private:
-		IndexBuffer* m_IndexBuffer;
 		VertexArray* m_VertexArray;
+		IndexBuffer* m_IndexBuffer;
 		Shader* m_Shader;
 
 		glm::mat4* m_Projection;
@@ -26,6 +26,7 @@ namespace test {
 		glm::mat4* m_Model;
 
 		glm::vec3* m_Position;
+		glm::vec3* m_Scale;
 		float* m_Rotation;
 	};
 }

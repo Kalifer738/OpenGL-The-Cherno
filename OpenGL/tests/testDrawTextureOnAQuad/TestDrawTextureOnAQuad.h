@@ -25,5 +25,9 @@ namespace test {
 		glm::mat4* m_Projection;
 		glm::mat4* m_View;
 		glm::mat4* m_Model;
+
+		glm::vec3* m_Position;
+		glm::vec3* m_Scale;
+		float* m_Rotation;
 	};
 }

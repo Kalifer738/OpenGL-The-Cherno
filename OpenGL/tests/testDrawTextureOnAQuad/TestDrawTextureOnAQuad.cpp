@@ -1,13 +1,21 @@
 #include "TestDrawTextureOnAQuad.h"
+#include "../glm/gtc/type_ptr.hpp"
+
+#include "../glm/gtx/string_cast.hpp"
+#include <iostream>
 
 namespace test {
 	TestDrawTextureOnAQuad::TestDrawTextureOnAQuad() {
+		m_Position = new glm::vec3(0.0f);
+		m_Rotation = new float(0.0f);
+		m_Scale = new glm::vec3(1.0f);
+
 		//Static render of verticies
 		float trianglePos[16] = {
-			100.0f, 100.0f, 0.0f, 0.0f,
-			200.0f, 100.0f, 1.0f, 0.0f,
-			200.0f, 200.0f, 1.0f, 1.0f,
-			100.0f, 200.0f, 0.0f, 1.0f
+			-50.0f, -50.0f, 0.0f, 0.0f,
+			 50.0f, -50.0f, 1.0f, 0.0f,
+			 50.0f,  50.0f, 1.0f, 1.0f,
+			-50.0f,  50.0f, 0.0f, 1.0f
 		};
 
 		//Instead of repeting each vertex's position multiple times, we store how they are connected.
@@ -29,11 +37,11 @@ namespace test {
 
 		// Projection Matrix: Converting any space cordinates, to 1-1 space mapping: mapping the screen from 0 left to 1 right for example, projective/ortrocraphic view
 		m_Projection = new glm::mat4(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f));
-		// View Matrix: Rotation/Transformaton/Scale of the camera: moves the camera to the left 100 units
-		m_View = new glm::mat4(glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0)));
+		// View Matrix: Rotation/Transformaton/Scale of the camera
+		m_View = new glm::mat4(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0)));
 
 		// Model matrix: Rotation/Transformaton/Scale of all the models in a scene
-		m_Model = new glm::mat4(glm::translate(glm::mat4(1.0f), glm::vec3(300, 150, 0)));
+		m_Model = new glm::mat4(glm::translate(glm::mat4(1.0f), *m_Position));
 
 		glm::mat4 mvp = (*m_Projection) * (*m_View) * (*m_Model);
 
@@ -59,12 +67,20 @@ namespace test {
 		delete m_Projection;
 		delete m_View;
 		delete m_Model;
+		delete m_Position;
+		delete m_Rotation;
+		delete m_Scale;
 	}
 
 	void TestDrawTextureOnAQuad::OnRender() {
 		Renderer renderer;
 
-		glm::mat4 mvp = (*m_Projection) * (*m_View) * (*m_Model);
+		glm::mat4 trans = glm::mat4(1.0f);
+		trans = glm::translate(trans, *m_Position);
+		trans = glm::rotate(trans, *m_Rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+		trans = glm::scale(trans, *m_Scale);
+
+		glm::mat4 mvp = (*m_Projection) * (*m_View) * (trans);
 		m_Shader->Bind();
 		m_Shader->SetUniformMat4f("u_MVP", mvp);
 
@@ -72,9 +88,10 @@ namespace test {
 	}
 
 	void TestDrawTextureOnAQuad::OnImGuiRender() {
-		ImGui::DragFloat("Vertex #1 X:", &m_Model[0][0].a, 0.0001);
-		ImGui::DragFloat("Vertex #1 X:", &m_Model[0][1].a, 0.0001);
-		ImGui::DragFloat("Vertex #1 X:", &m_Model[0][2].a, 0.0001);
-		ImGui::DragFloat("Vertex #1 X:", &m_Model[0][3].a, 0.0001);
+		ImGui::DragFloat("Position x", &m_Position->x, 0.5);
+		ImGui::DragFloat("Position y", &m_Position->y, 0.5);
+		ImGui::DragFloat("Rotation", m_Rotation, 0.1);
+		ImGui::DragFloat("Scale x", &m_Scale->x, 0.1);
+		ImGui::DragFloat("Scale y", &m_Scale->y, 0.1);
 	}
 }
